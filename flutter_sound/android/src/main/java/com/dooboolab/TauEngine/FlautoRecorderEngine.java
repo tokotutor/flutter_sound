@@ -18,8 +18,12 @@ package com.dooboolab.TauEngine;
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
+import android.content.Context;
+import android.media.AudioDeviceInfo;
 import android.media.AudioFormat;
+import android.media.AudioManager;
 import android.media.AudioRecord;
+import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -28,12 +32,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
-import java.nio.ShortBuffer;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Arrays;
 
 import com.dooboolab.TauEngine.Flauto.*;
+
+import io.flutter.plugin.common.PluginRegistry;
 
 
 public class FlautoRecorderEngine
@@ -214,13 +217,33 @@ public class FlautoRecorderEngine
 						tabCodec[codec.ordinal()]
 				) * 2;
 
+		AudioManager audioManager = (AudioManager) Flauto.androidContext.getSystemService(Context.AUDIO_SERVICE);
 
-		recorder = new AudioRecord( 	audioSource,
+		AudioDeviceInfo bluetoothInputDevice = null;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			AudioDeviceInfo[] allDeviceInfo = audioManager.getDevices(AudioManager.GET_DEVICES_INPUTS);
+
+			for (AudioDeviceInfo device : allDeviceInfo) {
+				if (device.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_SCO) {
+					bluetoothInputDevice = device;
+					if (bluetoothInputDevice.getChannelCounts().length >= 2) {
+						channelConfig = AudioFormat.CHANNEL_IN_STEREO;
+					};
+					break;
+				}
+			}
+		}
+
+		recorder = new AudioRecord(MediaRecorder.AudioSource.VOICE_RECOGNITION,
 				sampleRate,
 				channelConfig,
 				audioFormat,
 				bufferSize
 		);
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && bluetoothInputDevice != null) {
+			recorder.setPreferredDevice(bluetoothInputDevice);
+		}
 
 		if (recorder.getState() == AudioRecord.STATE_INITIALIZED)
 		{
