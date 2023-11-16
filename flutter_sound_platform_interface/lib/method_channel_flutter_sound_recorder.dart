@@ -44,79 +44,72 @@ class MethodChannelFlutterSoundRecorder extends FlutterSoundRecorderPlatform
     //channel = const MethodChannel('com.dooboolab.flutter_sound_recorder');
     _channel.setMethodCallHandler((MethodCall call)
     {
-      return channelMethodCallHandler(call);
+      FlutterSoundRecorderCallback? aRecorder = getSession(call.arguments['slotNo'] as int);
+      //bool? success = call.arguments['success'] as bool?;
+      bool success = call.arguments['success'] != null ? call.arguments['success'] as bool : false;
+
+
+      switch (call.method) {
+        case "updateRecorderProgress":
+          {
+            aRecorder!.updateRecorderProgress(duration:call.arguments ['duration'], dbPeakLevel: call.arguments['dbPeakLevel']);
+          }
+          break;
+
+          case "recordingData":
+          {
+            aRecorder!.recordingData(data: call.arguments['recordingData'] );
+          }
+          break;
+
+          case "startRecorderCompleted":
+          {
+            aRecorder!.startRecorderCompleted(call.arguments['state'], success );
+          }
+          break;
+
+          case "stopRecorderCompleted":
+          {
+            aRecorder!.stopRecorderCompleted(call.arguments['state'] , success, call.arguments['arg']);
+          }
+          break;
+
+          case "pauseRecorderCompleted":
+          {
+            aRecorder!.pauseRecorderCompleted(call.arguments['state'] , success);
+          }
+          break;
+
+          case "resumeRecorderCompleted":
+          {
+            aRecorder!.resumeRecorderCompleted(call.arguments['state'] , success);
+          }
+          break;
+
+          case "openRecorderCompleted":
+          {
+            aRecorder!.openRecorderCompleted(call.arguments['state'], success );
+          }
+          break;
+
+          case "closeRecorderCompleted":
+          {
+            aRecorder!.closeRecorderCompleted(call.arguments['state'], success );
+          }
+          break;
+
+          case "log":
+          {
+            aRecorder!.log(Level.values[call.arguments['logLevel']], call.arguments['msg']);
+          }
+          break;
+
+
+        default:
+          throw ArgumentError('Unknown method ${call.method}');
+      }
     });
   }
-
-
-
-Future<void> channelMethodCallHandler(MethodCall call) async {
-    FlutterSoundRecorderCallback? aRecorder = getSession(call.arguments['slotNo'] as int);
-    //bool? success = call.arguments['success'] as bool?;
-    bool success = call.arguments['success'] != null ? call.arguments['success'] as bool : false;
-
-
-    switch (call.method) {
-      case "updateRecorderProgress":
-        {
-          aRecorder!.updateRecorderProgress(duration:call.arguments ['duration'], dbPeakLevel: call.arguments['dbPeakLevel']);
-        }
-        break;
-
-        case "recordingData":
-        {
-          aRecorder!.recordingData(data: call.arguments['recordingData'] );
-        }
-        break;
-
-        case "startRecorderCompleted":
-        {
-          aRecorder!.startRecorderCompleted(call.arguments['state'], success );
-        }
-        break;
-
-        case "stopRecorderCompleted":
-        {
-          aRecorder!.stopRecorderCompleted(call.arguments['state'] , success, call.arguments['arg']);
-        }
-        break;
-
-        case "pauseRecorderCompleted":
-        {
-          aRecorder!.pauseRecorderCompleted(call.arguments['state'] , success);
-        }
-        break;
-
-        case "resumeRecorderCompleted":
-        {
-          aRecorder!.resumeRecorderCompleted(call.arguments['state'] , success);
-        }
-        break;
-
-        case "openRecorderCompleted":
-        {
-          aRecorder!.openRecorderCompleted(call.arguments['state'], success );
-        }
-        break;
-
-        case "closeRecorderCompleted":
-        {
-          aRecorder!.closeRecorderCompleted(call.arguments['state'], success );
-        }
-        break;
-
-        case "log":
-        {
-          aRecorder!.log(Level.values[call.arguments['logLevel']], call.arguments['msg']);
-        }
-        break;
-
-
-      default:
-        throw ArgumentError('Unknown method ${call.method}');
-    }
-  }
-
 
 
   Future<void> invokeMethodVoid (FlutterSoundRecorderCallback callback,  String methodName, Map<String, dynamic> call)
