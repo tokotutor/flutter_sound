@@ -2,10 +2,11 @@ name: flutter_sound_web
 version: 9.2.13
 description: Flutter plugin that relates to sound like audio and recorder.
 #author: dooboolab<dooboolab@gmail.com>
-homepage: https://github.com/dooboolab/flutter_sound
+homepage: https://github.com/tokotutor/flutter_sound
 environment:
     sdk: '>=2.12.0 <3.0.0'
     flutter: ">=1.12.0"
+publish_to: none
 
 # 0.1.y+z is compatible with 1.0.0, if you land a breaking change bump
 # the version to 2.0.0.
@@ -28,8 +29,11 @@ flutter:
 
 
 dependencies:
-  flutter_sound_platform_interface: 9.2.13
-#    path: ../flutter_sound_platform_interface # Flutter Sound Dir
+  flutter_sound_platform_interface:
+    git:
+      url: https://github.com/tokotutor/flutter_sound
+      path: flutter_sound_platform_interface
+      ref: eric/improvements
   flutter:
     sdk: flutter
   logger: ^1.0.0
