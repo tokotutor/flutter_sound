@@ -50,7 +50,7 @@ class MethodChannelFlutterSoundRecorder extends FlutterSoundRecorderPlatform
 
 
 
-Future<dynamic>? channelMethodCallHandler(MethodCall call) {
+Future<void> channelMethodCallHandler(MethodCall call) async {
     FlutterSoundRecorderCallback? aRecorder = getSession(call.arguments['slotNo'] as int);
     //bool? success = call.arguments['success'] as bool?;
     bool success = call.arguments['success'] != null ? call.arguments['success'] as bool : false;
@@ -115,8 +115,6 @@ Future<dynamic>? channelMethodCallHandler(MethodCall call) {
       default:
         throw ArgumentError('Unknown method ${call.method}');
     }
-
-    return null;
   }
 
 
