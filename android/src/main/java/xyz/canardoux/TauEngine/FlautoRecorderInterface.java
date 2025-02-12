@@ -1,11 +1,6 @@
-//
-//  Flauto.h
-//  Pods
-//
-//  Created by larpoux on 24/03/2020.
-//
+package xyz.canardoux.TauEngine;
 /*
- * Copyright 2018, 2019, 2020, 2021 Dooboolab.
+ * Copyright 2018, 2019, 2020, 2021 DoobCanardouxolab.
  *
  * This file is part of Flutter-Sound.
  *
@@ -23,20 +18,29 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-
-#ifndef FlutterSound_h
-#define FlutterSound_h
-
-#import <Flutter/Flutter.h>
-#import <AVFoundation/AVFoundation.h>
-#import "Flauto.h"
+import java.io.IOException;
+import xyz.canardoux.TauEngine.Flauto.t_CODEC;
 
 
-@interface FlutterSound : NSObject <FlutterPlugin, AVAudioPlayerDelegate>
+public interface FlautoRecorderInterface
 {
+	public void _startRecorder
+		(
+			Integer numChannels,
+			Boolean interleaved,
+			Integer sampleRate,
+			Integer bitRate,
+			Integer bufferSize,
+			t_CODEC codec,
+			String path,
+			int audioSource,
+			FlautoRecorder session
+		)
+		throws
+		IOException, Exception;
+	public void _stopRecorder (  ) throws Exception;
+	public boolean pauseRecorder( );
+	public boolean resumeRecorder(  );
+	public double getMaxAmplitude ();
+
 }
-+ (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar;
-
-@end
-
-#endif /* FlutterSound_h */

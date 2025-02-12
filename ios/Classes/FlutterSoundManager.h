@@ -31,7 +31,7 @@
 
 #import <Flutter/Flutter.h>
 #import <AVFoundation/AVFoundation.h>
-#import <flutter_sound_core/Flauto.h>
+#import "Flauto.h"
 
 @interface Session : NSObject
 {
